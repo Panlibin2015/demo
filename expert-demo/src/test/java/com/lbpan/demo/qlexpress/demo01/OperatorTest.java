@@ -148,12 +148,12 @@ public class OperatorTest {
             public Object executeInner(Object[] list) throws Exception {
                 String who = (String) list[0];
                 String activityValue = (String) list[1];
-                System.out.println("参与Operator:参与处理");
+                System.out.println("参与Operator:" + who + "参与处理" + activityValue);
                 return true;
             }
         });
 
-        String exp = "if( 小明 参与 邀请活动 ) then {return \"参与成功\";} else {return \"参与失败\";}";
+        String exp = "if( \"小明\" 参与 \"邀请活动\" ) then {return \"参与成功\";} else {return \"参与失败\";}";
         DefaultContext<String, Object> context = new DefaultContext<String, Object>();
         System.out.println(runner.execute(exp, context, null, false, false, null));
     }
