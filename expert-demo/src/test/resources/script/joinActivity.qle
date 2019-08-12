@@ -1,0 +1,42 @@
+========================准备阶段========================
+operator 维护 ---- (基础operator + 扩展operator) 业务平台弱相关
+bindMethod 维护 ---- (java 基础方法绑定 - 业务平台强相关)
+function 维护 ----(基础function + 业务function)
+aliasName 维护 ---- 业务平台弱相关
+
+ruleTemplate 创建
+ruleTemplate 渲染 => ruleScript 业务强相关
+========================加载阶段========================
+operator 设置
+bindMeghod 设置
+aliasName 设置
+
+ruleScript 加载
+========================运行阶段========================
+fact 封装 
+    |
+    |
+    |
+   \|/
+---------脚本--------
+action()
+
+...
+if ( condition )
+    action()
+then
+    action()
+else
+    action()
+...
+
+action()
+---------脚本---------
+    |
+    |
+   \|/
+  输出结果
+
+========================处理阶段========================
+结果处理
+
