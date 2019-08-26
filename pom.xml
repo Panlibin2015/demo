@@ -6,7 +6,11 @@
 
     <groupId>com.lbpan.demo</groupId>
     <artifactId>demo</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0.0-SNAPSHOT</version>
+    <modules>
+        <module>zookeeper-demo</module>
+    </modules>
+    <packaging>pom</packaging>
 
     <name>demo</name>
     <!-- FIXME change it to the project's website -->
