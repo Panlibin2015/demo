@@ -1,10 +1,14 @@
 package com.lbpan.demo.qlexpress.demo01;
 
-import com.ql.util.express.DefaultContext;
-import com.ql.util.express.ExpressRunner;
-import com.ql.util.express.IExpressContext;
-import com.ql.util.express.Operator;
+import com.lbpan.demo.operator.JoinActivityOperator;
+import com.ql.util.express.*;
+import com.ql.util.express.instruction.op.OperatorFactory;
+import com.ql.util.express.parse.NodeTypeManager;
 import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * 操作符
@@ -142,20 +146,35 @@ public class OperatorTest {
      */
     @Test
     public void operatorDesOperator() throws Exception {
-        ExpressRunner runner = new ExpressRunner();
-        runner.addOperator("参与", new Operator() {
-            @Override
-            public Object executeInner(Object[] list) throws Exception {
-                String who = (String) list[0];
-                String activityValue = (String) list[1];
-                System.out.println("参与Operator:" + who + "参与处理" + activityValue);
-                return true;
-            }
-        });
+        ExpressRunner runner = new ExpressRunner(true, true);
+        OperatorFactory operatorFactory = runner.getOperatorFactory();
+        NodeTypeManager nodeTypeManager = runner.getNodeTypeManager();
+
+        nodeTypeManager.addOperatorWithLevelOfReference("joinActivity", "*");
+        operatorFactory.addOperator("joinActivity", new JoinActivityOperator(runner));
+
+        runner.addOperatorWithAlias("参与", "joinActivity", "参与活动失败");
+        runner.addOperatorWithAlias("参与活动", "joinActivity", "参与活动失败1");
 
         String exp = "if( \"小明\" 参与 \"邀请活动\" ) then {return \"参与成功\";} else {return \"参与失败\";}";
         DefaultContext<String, Object> context = new DefaultContext<String, Object>();
-        System.out.println(runner.execute(exp, context, null, false, false, null));
+        List<String> errorList = new ArrayList<>();
+        System.out.println(runner.execute(exp, context, errorList, true, true, null));
+        String exp2 = "小明 参与活动 活动";
+        DefaultContext<String, Object> context2 = new DefaultContext<String, Object>();
+        System.out.println(runner.execute(exp2, context2, errorList, true, true, null));
+        System.out.println(Arrays.toString(errorList.toArray()));
+
+        // action
+        String express = "会员 参与活动 活动";
+        ExpressRunner expressRunner = new ExpressRunner(false, false);
+        expressRunner.addOperator("joinActivity", new JoinActivityOperator(runner));
+        expressRunner.addOperatorWithAlias("参与活动", "joinActivity", "参与活动失败");
+        String[] names = expressRunner.getOutVarNames(express);
+
+        for (String s : names) {
+            System.out.println("var:" + s);
+        }
     }
 
     /**
@@ -175,7 +194,7 @@ public class OperatorTest {
                 new Class[]{String.class, String.class}, null);
 
         String exp = "取绝对值(-100);转换为大写(\"hello world\");打印(\"你好吗？\");contains(\"helloworld\",\"aeiou\")";
-        runner.execute(exp, null, null, false, false);
+        System.out.println(runner.execute(exp, null, null, false, false));
     }
 
     /**
@@ -201,7 +220,11 @@ public class OperatorTest {
      */
     @Test
     public void macroInt() throws Exception {
-        String express = "int 平均分 = (语文+数学+英语+综合考试.科目2)/4.0;return 平均分";
+
+        // 击中 faild逻辑则直接返回
+
+        // action
+        String express = "int 平均分 = (语文+数学+英语+综合考试.科目2)/4.0;return 平均分;";
         ExpressRunner expressRunner = new ExpressRunner(false, false);
         String[] names = expressRunner.getOutVarNames(express);
         for (String s : names) {

@@ -26,7 +26,7 @@ public class TimeClient {
             socket = new Socket("localhost", port);
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             out = new PrintWriter(socket.getOutputStream());
-            out.println("query time order");
+            out.print("query time order");
             out.flush();
             System.out.println("Send order 2 server successed.");
             String resp = in.readLine();

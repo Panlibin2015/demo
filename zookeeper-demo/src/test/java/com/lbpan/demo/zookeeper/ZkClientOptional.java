@@ -80,7 +80,7 @@ public class ZkClientOptional {
             }
         });
 
-        System.out.println(zkClient.readData(path));
+        System.out.println(zkClient.readData(path).toString());
         zkClient.writeData(path, "456"); // 更新数据
 
         if (zkClient.exists(path)) { // 节点是否存在

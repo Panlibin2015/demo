@@ -142,6 +142,8 @@ public class TimeClientHandler implements Runnable {
                 } else {
                     // 读到0字节忽略
                 }
+            } else if (key.isConnectable()) {
+                doConnect();
             }
         }
     }

@@ -25,6 +25,7 @@ public class MultiplexerTimeServer implements Runnable {
             servChannel = ServerSocketChannel.open();
             servChannel.configureBlocking(false);
             servChannel.socket().bind(new InetSocketAddress(port), 1024);
+            servChannel.register(selector, SelectionKey.OP_ACCEPT);
             System.out.println("The time server is start in port:" + port);
         } catch (Exception e) {
             e.printStackTrace();
@@ -64,8 +65,6 @@ public class MultiplexerTimeServer implements Runnable {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
-
         }
 
         if (selector != null) {
@@ -83,7 +82,8 @@ public class MultiplexerTimeServer implements Runnable {
             // 处理新接入的请求消息
             if (key.isAcceptable()) {
                 // Accept the new connection
-                SocketChannel sc = (SocketChannel) key.channel();
+                ServerSocketChannel serverSocketChannel = (ServerSocketChannel) key.channel();
+                SocketChannel sc = serverSocketChannel.accept();
 
 
                 ByteBuffer readBuffer = ByteBuffer.allocate(1024);
